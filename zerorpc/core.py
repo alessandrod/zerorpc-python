@@ -43,7 +43,7 @@ import patterns
 class ServerBase(object):
 
     def __init__(self, channel, methods=None, name=None, context=None,
-            pool_size=None, heartbeat=5):
+            pool=None, pool_size=None, heartbeat=5):
         self._multiplexer = ChannelMultiplexer(channel)
 
         if methods is None:
@@ -51,7 +51,9 @@ class ServerBase(object):
 
         self._context = context or Context.get_instance()
         self._name = name or self._extract_name()
-        self._task_pool = gevent.pool.Pool(size=pool_size)
+        if pool is None:
+            pool = gevent.pool.Pool(size=pool_size)
+        self._task_pool = pool
         self._acceptor_task = None
         self._methods = self._filter_methods(ServerBase, self, methods)
 
