@@ -41,7 +41,8 @@ class Context(zmq.Context):
             'call_procedure': [],
             'load_task_context': [],
             'get_task_context': [],
-            'inspect_error': []
+            'inspect_error': [],
+            'set_idle': []
         }
         self._reset_msgid()
 
@@ -116,3 +117,7 @@ class Context(zmq.Context):
         for functor in self._middlewares_hooks['get_task_context']:
             event_header.update(functor())
         return event_header
+
+    def middleware_set_idle(self, server, idle):
+        for functor in self._middlewares_hooks['set_idle']:
+            functor(server, idle)

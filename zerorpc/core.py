@@ -160,7 +160,9 @@ class ServerBase(object):
 
     def _acceptor(self):
         while True:
+            self._context.middleware_set_idle(self, True)
             initial_event = self._multiplexer.recv()
+            self._context.middleware_set_idle(self, False)
             self._task_pool.spawn(self._async_task, initial_event)
 
     def run(self):
